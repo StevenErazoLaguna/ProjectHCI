@@ -23,6 +23,19 @@
       generarColorObjetivo();
     }, []);
 
+    const guardarDatosEnMongoDB = async (datos) => {
+      try {
+        await axios.post('http://127.0.0.1:5000/guardar_datos', {
+          ...datos,
+          nivel: nivel
+        });
+        mostrarAlerta('Datos guardados en la base de datos');
+      } catch (error) {
+        console.error('Error al guardar datos:', error);
+        mostrarAlerta('Error al guardar los datos en la base de datos');
+      }
+    };
+
     const calcularTiempoTranscurrido = () => {
       return Math.floor((Date.now() - inicioTiempo) / 1000);
     };
@@ -32,7 +45,7 @@
       setColorObjetivo(randomColor);
     };
 
-        //manejar el mostrar alertas
+      //manejar el mostrar alertas
     const mostrarAlerta = (mensaje) => {
       setAlerta({visible: true, mensaje});
     };
@@ -105,7 +118,7 @@
       };
 
       if (!modoIA) {
-        guardarDatosLocalmente(datos);
+        await guardarDatosEnMongoDB(datos);
       } else {
         try {
           const response = await axios.post('http://127.0.0.1:5000/predecir', datos);
@@ -149,6 +162,8 @@
         window.location.href = '/';
       }
     };
+
+
 
 
 
